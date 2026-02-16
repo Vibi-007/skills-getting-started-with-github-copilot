@@ -17,9 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
+        activityCard.dataset.activity = name;
 
         const spotsLeft = details.max_participants - details.participants.length;
-        const participantsList = details.participants.map(p => `<li>${p}</li>`).join('');
+        const participantsList = details.participants.map(p => `<li><span class="participant-name">${p}</span><button class="delete-participant" data-email="${p}" title="Remove ${p}">×</button></li>`).join('');
 
         activityCard.innerHTML = `
           <h4>${name}</h4>
@@ -35,6 +36,28 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         activitiesList.appendChild(activityCard);
+
+        // Add delete listeners to participant buttons
+        const deleteButtons = activityCard.querySelectorAll(".delete-participant");
+        deleteButtons.forEach(button => {
+          button.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const email = button.dataset.email;
+            try {
+              const response = await fetch(
+                `/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(email)}`,
+                { method: "POST" }
+              );
+              if (response.ok) {
+                fetchActivities();
+              } else {
+                console.error("Failed to unregister participant");
+              }
+            } catch (error) {
+              console.error("Error unregistering participant:", error);
+            }
+          });
+        });
 
         // Add option to select dropdown
         const option = document.createElement("option");
