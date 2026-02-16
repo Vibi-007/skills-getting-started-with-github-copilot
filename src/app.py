@@ -24,8 +24,51 @@ activities = {
     "Chess Club": {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Fridays, 3:30 PM - 5:00 PM",
+        "location": "Room 301",
         "max_participants": 12,
         "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+    },
+    "Basketball Team": {
+        "description": "Join our varsity and intramural basketball teams",
+        "schedule": "Mondays, Wednesdays, Fridays, 3:30 PM - 5:00 PM",
+        "location": "Gymnasium",
+        "max_participants": 15,
+        "participants": ["james@mergington.edu"]
+    },
+    "Tennis Club": {
+        "description": "Learn and play tennis with other students",
+        "schedule": "Tuesdays and Thursdays, 4:00 PM - 5:30 PM",
+        "location": "Tennis Courts",
+        "max_participants": 16,
+        "participants": ["sarah@mergington.edu"]
+    },
+    "Drama Club": {
+        "description": "Perform in school plays and theatrical productions",
+        "schedule": "Wednesdays, 3:30 PM - 5:00 PM",
+        "location": "Auditorium",
+        "max_participants": 25,
+        "participants": ["lucas@mergington.edu", "ava@mergington.edu"]
+    },
+    "Art Studio": {
+        "description": "Explore painting, drawing, and sculpture",
+        "schedule": "Mondays and Thursdays, 3:30 PM - 5:00 PM",
+        "location": "Art Room 205",
+        "max_participants": 18,
+        "participants": ["isabella@mergington.edu"]
+    },
+    "Debate Team": {
+        "description": "Compete in debate tournaments and develop public speaking skills",
+        "schedule": "Tuesdays and Fridays, 3:30 PM - 5:00 PM",
+        "location": "Room 215",
+        "max_participants": 14,
+        "participants": ["noah@mergington.edu", "mia@mergington.edu"]
+    },
+    "Science Club": {
+        "description": "Conduct experiments and explore STEM topics",
+        "schedule": "Wednesdays, 3:30 PM - 4:30 PM",
+        "location": "Science Lab",
+        "max_participants": 20,
+        "participants": ["alex@mergington.edu"]
     },
     "Programming Class": {
         "description": "Learn programming fundamentals and build software projects",
@@ -54,6 +97,9 @@ def get_activities():
 
 @app.post("/activities/{activity_name}/signup")
 def signup_for_activity(activity_name: str, email: str):
+    # Validate student is not already signed up
+    if activity_name in activities and email in activities[activity_name]["participants"]:
+        raise HTTPException(status_code=400, detail="Student already signed up for this activity")
     """Sign up a student for an activity"""
     # Validate activity exists
     if activity_name not in activities:
